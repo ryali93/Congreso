@@ -1,0 +1,39 @@
+---
+title: "Congreso HidroAmbiental II"
+author: "Roy Yali Samaniego"
+date: "21 de febrero de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GGPLOT2
+
+- Hadley Wickman
+- Tiene capas para elementos gramaticales
+- Mapeos estéticos
+
+```{r ggplot}
+# Dataset iris
+library(ggplot2)
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_jitter(alpha = 0.6) +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se = F, col = "red")
+
+levels(iris$Species) <- c("Setosa", "Versicolor", "Virginica")
+
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_jitter(alpha = 0.6) +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se = F, col = "red") +
+  scale_y_continuous("Sepal Width (cm)",
+                     limits = c(2, 5),
+                     expand = c(0, 0)) +
+  scale_x_continuous("Sepal Length (cm)",
+                     limits = c(4, 8),
+                     expand = c(0, 0)) +
+  coord_equal()
+```

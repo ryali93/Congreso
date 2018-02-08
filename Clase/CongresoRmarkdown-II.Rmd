@@ -1,0 +1,389 @@
+---
+title: "Congreso HidroAmbiental II"
+author: "Roy Yali Samaniego"
+date: "21 de febrero de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Bucles
+"Hacer bucles", "loops", "iterar" o simplemente replicar instrucciones no es más que automatizar un proceso de varios pasos al organizar secuencias de acciones o procesos 'por lotes' y al agrupar las partes que necesitan repetirse.
+
+## While
+El bucle while es un ciclo repetitivo basado en los resultados de una expresión lógica, buscando repetir un bloque de código mientras una condición se mantenga verdadera.
+
+```{r}
+speed <- 64
+
+# Bucle While
+while (speed > 30 ) {
+  print ("Slow down!")
+  speed <- speed - 7
+}
+speed
+
+# If y Else
+speed <- 64
+
+while (speed > 30) {
+  print(paste("Your speed is",speed))
+  if (speed > 48 ) {
+    print("Slow down big time!")
+    speed <- speed - 11
+  } else {
+    print ("Slow down!")
+    speed <- speed - 6
+    
+  }
+}
+
+# Break
+speed <- 88
+
+while (speed > 30) {
+  print(paste("Your speed is", speed))
+  
+# Break(Cortar) el ciclo cuando la velocidad en el bucle excede 80
+  if (speed > 80 ) {
+    break
+  }
+  
+  if (speed > 48) {
+    print("Slow down big time!")
+    speed <- speed - 11
+  } else {
+    print("Slow down!")
+    speed <- speed - 6
+  }
+}
+
+# Ejemplo
+i <- 1
+
+while (i <= 10) {
+  print(3*i)
+  if ( (3*i)%%8 == 0 ) {
+    break
+  }
+  i <- i + 1
+}
+```
+
+## FOR
+El bucle FOR se utiliza para repetir una o más instrucciones un determinado número de veces. Entre todos los bucles, es el más utilizado. Se usa cuando se está seguro del número de veces que queremos que se ejecute.
+
+```{r}
+# for (var in seq){
+#     expr
+# }
+
+departamentos <- c( "Cusco", "Lambayeque","Lima", "Ica", "Madre de Dios")
+
+for(dep in departamentos){
+  print(dep)
+}
+
+for(dep in departamentos){
+  if(nchar(dep) < 5){
+    break
+  }
+  print(dep)
+}
+
+for(i in 1:length(departamentos)){
+  print(paste(departamentos[i], "es la posicion", i, "en el vector departamentos"))
+}
+
+
+ttt_v <- c("O", NA, "X", NA, "O", "O", "X",  NA, "X")
+ttt <- matrix(ttt_v, nrow = 3, byrow = T)
+
+for (i in 1:nrow(ttt)) {
+  for (j in 1:ncol(ttt)) {
+    print(paste("On row", i, "and column", j, "the board contains", ttt[i,j]))
+  }
+}
+```
+
+## FUNCIONES
+
+Una función es un grupo de instrucciones que toma un "input" o 
+datos de entrada, usa estos datos para computar otros valores 
+y retorna un resultado/producto.
+
+```{r}
+# Ejemplo con la funcion mean
+
+# help(mean) # Documentacion
+# ?mean      # Documentacion
+# args(mean) # Argumentos de una variable
+
+# Ejemplos con ls(), sample(), rnorm()
+
+
+# Definir Funciones
+# Permite resolver un problema particular y es bueno para definir problemas
+# Facilita trabajos rutinarios
+
+fun1 <- function(a, b = 1){
+  if(b == 0){
+    return (0)
+  }
+  a*b + a/b
+}
+
+# Ejemplo 2
+
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+facebook <- c(17, 7, 5, 16, 8, 13, 14)
+
+# Definir la funcion interpret()
+interpret <- function(num_views) {
+  if (num_views > 15) {
+    print("You're popular!")
+    return(num_views)
+  } else {
+    print("Try to be more visible!")
+    return(0)
+  }
+}
+
+# Definir la funcion interpret_all()
+# return_sum: devuelve el total de vistas en dias populares?
+interpret_all <- function(views, return_sum = TRUE) {
+  count <- 0
+  for (v in views) {
+      count <- count + interpret(v)
+  }
+
+  if (return_sum == TRUE) {
+      return(count)
+  } else {
+      return(NULL)
+  }
+}
+
+interpret_all(linkedin)
+interpret_all(facebook)
+
+```
+
+## PAQUETES R
+
+Un paquete es una colección de funciones, datos y código R que se almacenan en una carpeta conforme a una estructura bien definida, fácilmente accesible para R.
+
+```{r ggplot2}
+# Instalar paquetes
+# install.packages("ggplot2")
+
+# CRAN: Comprehensive R Archive Network
+
+# Buscar un paquete en la lista de paquetes abiertos
+search()
+
+# Cargar una libreria
+library("ggplot2")
+result <- require("ggplot2")
+result
+qplot(mtcars$wt, mtcars$hp)
+```
+
+## FAMILIA APPLY
+
+Es una familia de funciones vectorizadas, las cuales permiten efectuar operaciones con muy pocas líneas de código.
+
+```{r}
+# Recordando:
+lima <- list(poblacion = 9752000,
+                  distritos = c("SMP", "Independencia", "San Isidro", "Lince", "VES", "ATE"),
+                  capital = TRUE)
+
+for(info in lima){
+  print(class(info))
+}
+
+# Apply
+# Aplica una función a una matriz, lista o vector que se le pase como parámetro.
+
+# Lapply
+# Es una función Apply sobre listas o vectores.
+# Puede retornar objetos R de diferentes clases.
+# La lista necesariamente debe tener data heterogenea
+
+lapply(lima, class)
+
+distritos = c("SMP", "Independencia", "San Isidro", "Lince", "VES", "ATE")
+num_chars <- c()
+for(i in 1:length(distritos)){
+  num_chars[i] <- nchar(distritos[i])
+}
+
+unlist(lapply(distritos, nchar))
+
+oil_prices <- list(2.37, 2.49, 2.18, 2.22, 2.47, 2.32)
+multiply <- function(x, factor){
+  x*factor
+}
+
+time3 <- lapply(oil_prices, multiply, factor = 3)
+unlist(time3)
+
+# Sapply
+# Funcion sobre una lista o vector
+# simplifica una lista a un array
+
+distritos = c("SMP", "Independencia", "San Isidro", "Lince", "VES", "ATE")
+unlist(lapply(distritos, nchar))
+
+sapply(distritos, nchar, USE.NAMES = TRUE)
+
+first_and_last <- function(name){
+  name <- gsub(" ", "", name)
+  letters <- strsplit(name, split = "")[[1]]
+  c(first = min(letters), last = max(letters))
+}
+first_and_last("Roy Yali Samaniego")
+sapply(distritos, first_and_last)
+sapply(distritos, first_and_last)
+
+# Vapply
+# Funcion sobre una lista o vector
+# Especifica el tipo de dato de salida
+
+distritos = c("SMP", "Independencia", "San Isidro", "Lince", "VES", "ATE")
+sapply(distritos, nchar)
+
+vapply(distritos, nchar, numeric(1))
+vapply(distritos, first_and_last, character(2))
+# vapply(distritos, first_and_last, character(1))    ERROR
+
+# vapply es más segura que sapply
+```
+
+## FUNCIONES ÚTILES
+
+```{r}
+# Utilitarios matematicos
+
+v1 <- c(1.1, -7.1, 5.4, -2.7)
+v2 <- c(-3.6, -4.1, 5.8, -8.0)
+
+mean(c(sum(round(abs(v1))),sum(round(abs(v2)))))
+
+# abs()
+# Devuelve el valor absoluto del elemento
+
+# round()
+# Redondea el valor del elemento
+
+# sum()
+# Devuelve la suma de los elementos
+
+# mean()
+# Devuelve la media de los elementos
+
+
+# Funciones para estructuras de datos
+li <- list(log = TRUE,
+            ch = "hello",
+            int_vec = sort(rep(seq(8, 2, by = -2), times = 2)))
+
+# seq()
+# Genera una secuencia especificando los argumentos from, to, by
+
+# rep()
+# Replica los elementos de vectores y listas
+
+# sort()
+# Ordena los vectores en orden ascendente, trabaja con números, pero también puede ser usado para letras y logicos
+
+# rev()
+# Reversa los elementos de unos datos estructurados
+
+# srt()
+# Muestra la estructura del objeto
+
+# append()
+# Mezcla vectores o listas
+
+# is.*()
+# Verifica la clase del objeto
+
+# as.*()
+# Convierte el objeto a la clase indicada
+
+linkedin <- list(16, 9, 13, 5, 2, 17, 14)
+facebook <- list(17, 7, 5, 16, 8, 13, 14)
+
+li_vec <- unlist(linkedin)
+fb_vec <- unlist(facebook)
+
+social_vec <- append(li_vec, fb_vec)
+
+sort(social_vec, decreasing = TRUE)
+
+
+# Expresiones regulares
+# Secuencia de (meta)caracteres
+# Patron de existencia
+# Patron de reemplazamiento
+# Patron de extracción
+
+animals <- c("gato", "raton", "impala", "araña", "elefante")
+grepl(pattern = "a", x = animals)
+
+# grepl()
+# Devuelve TRUE cuando se encuentra un patrón en la cadena de caracteres correspondiente.
+grepl(pattern = "a", x = animals)
+
+# grep()
+# Devuelve un vector de índices de las cadenas de caracteres que contiene el patrón
+grep(pattern = "a", x = animals)
+
+# sub()
+# Permite reemplazar la primera coincidencia, especificando el argumento de reemplazo
+sub(pattern = "a", replacement = "o", x = animals)
+
+# gsub()
+# Permite reemplazar todas las coincidencias, especificando el argumento de reemplazo
+gsub(pattern = "a|i", replacement = "_", x = animals)
+
+```
+
+## SERIES DE TIEMPO Y FECHAS
+
+```{r}
+
+today <- Sys.Date()
+today
+
+class(today)
+
+
+now <- Sys.time()
+now
+
+class(now)
+
+my_date <- as.Date("1992-23-09", format = "%Y-%d-%m")
+my_date
+
+my_time <- as.POSIXct("1971-05-14 11:25:15")
+my_time
+
+my_time2 <- as.POSIXct("1974-07-14 21:11:55")
+
+my_time2 - my_time
+
+unclass(my_date) # * días desde 01 de enero de 1970
+
+unclass(my_time) # * segundos desde 01 de enero de 1970 00:00:00
+
+# Para usar librerias como:
+# lubridate
+# zoo
+# xts
+```

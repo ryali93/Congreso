@@ -1,0 +1,207 @@
+---
+title: "Congreso HidroAmbiental I"
+author: "Roy Yali Samaniego"
+date: "21 de febrero de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introducción
+R es un lenguaje y entorno para computación y gráficos estadísticos.  Se compila y se ejecuta en una amplia variedad de plataformas UNIX, Windows y MacOS.
+
+R proporciona una amplia variedad de técnicas estadísticas (modelado lineal y no lineal, pruebas estadísticas clásicas, análisis de series de tiempo, clasificación, agrupamiento, ...) y gráficos, y es altamente extensible.
+```{r}
+#Aritmetica con R
+
+5 + 5           # Suma
+5 - 5           # Resta
+3 * 5           # Multiplicacion
+(5 + 5) / 2     # Division
+2 ^ 5           # Exponentes
+28 %%6          # Modulo
+
+#Asignacion de variables
+x <- 42
+x
+manzanas <- 5
+naranjas <- 6
+frutas <- manzanas + naranjas
+frutas
+```
+
+## Tipos de datos
+
+```{r}
+num <- 42           #Numerico
+char <- "universo"  #Caracter
+logico <- FALSE     #Logico
+
+class(num)
+class(char)
+class(logico)
+```
+
+## Vectores
+Arreglos unidimensionales que pueden almacenar data numerica, caracteres, logicos
+```{r}
+vector_numerico <- c(1, 10, 49)
+vector_numerico
+vector_caracter <- c("a", "b", "c")
+vector_caracter
+vector_logico   <- c(T,F,T)
+vector_logico
+
+persona <- c("Nombre Apellido", "Estudiante")
+names(persona) <- c("Name", "Profession")
+
+persona
+
+semana1 <- c(-40, -30, -14, 110, -35)
+semana2 <- c(-20, -32, 16, -50, 140)
+dias <- c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes")
+names(semana1) <- dias
+
+semana1
+
+total <- sum(semana1)+sum(semana2)
+total
+
+total_semana1 <- sum(semana1)
+total_semana2 <- sum(semana2)
+
+total_semana1 > total_semana2
+
+names(semana1) <- c("Lunes", "Martes", "Miercoles", "Jueves", "Viernes")
+
+#Seleccion o subset
+semana1[2]
+semana2[4]
+
+dias <- semana1[c("Lunes","Martes","Miercoles")]
+
+mean(dias)
+
+#Seleccion por comparacion
+# < para MENOR QUE
+# > para  MAYOR QUE
+# <= para MENOR O IGUAL QUE
+# >= para MAYOR O IGUAL QUE
+# == para IGUAL QUE OTRO
+# != para DIFERENTE DE OTRO
+
+c(5,6,7,8) > 6
+```
+
+## Matrices
+
+Coleccion de elementos del mismo tipo ordenados en filas y columnas.
+Arreglos de 2 dimensiones.
+
+```{r}
+matrix(1:9, byrow = TRUE, nrow = 3)
+
+nueva_esperanza <- c(460.998, 314.4)
+imperio_contraataca <- c(290.475, 247.900)
+retorno_jedi <- c(309.306, 165.8)
+
+caja_sw <- c(nueva_esperanza,imperio_contraataca,retorno_jedi)
+caja_sw
+
+sw_matriz <- matrix(caja_sw, nrow=3,byrow = TRUE)
+sw_matriz
+
+region <- c("US", "no-US")
+cabeceras <- c("Una nueva esperanza", "El imperio contraataca", "El retorno del Jedi")
+
+colnames(sw_matriz) <- region
+rownames(sw_matriz) <- cabeceras
+
+caja_sw <- c(460.998, 314.4, 290.475, 247.900, 309.306, 165.8)
+sw_matriz <- matrix(caja_sw, nrow = 3, byrow = TRUE, 
+                    dimnames = list(c("Una nueva esperanza", "El imperio contraataca", "El retorno del Jedi"),
+                                    c("US", "no-US")))
+sw_matriz
+resumen_sw <- rowSums(sw_matriz)
+resumen_sw
+
+# Unir datos
+# cbind() --> Columnas
+# rbind() --> filas
+all_wars_matrix <- cbind(sw_matriz, resumen_sw)
+
+caja_sw2 <- c(474.5, 552.5, 310.7, 338.7, 380.3, 468.5)
+sw_matriz2 <- matrix(caja_sw, nrow = 3, byrow = TRUE, 
+                    dimnames = list(c("La amenaza fantasma", "La venganza de los clones", "La venganza de los Sith"),
+                                    c("US", "no-US")))
+
+resumen_sw <- rowSums(sw_matriz)
+
+sw_matriz2 <- cbind(sw_matriz, resumen_sw)
+
+resumen_sw2 <- colSums(sw_matriz)
+
+mean(sw_matriz[,1])
+```
+
+## Data Frame
+
+Un data frame puede contener información en 2 dimensiones pero de diferentes tipos de datos a diferencia de una matriz.
+
+```{r}
+mtcars
+
+head(mtcars)
+
+# Verificadr la estructura
+str(mtcars)
+
+nombre <- c("Mercurio", "Venus", "Tierra", "Marte", "Jupiter", "Saturno", "Urano", "Neptuno")
+tipo <- c("Planeta Terrestre", "Planeta Terrestre", "Planeta Terrestre", "Planeta Terrestre", "Gigante de Gas", "Gigante de Gas", "Gigante de Gas", "Gigante de Gas")
+diametro <- c(0.382, 0.949, 1, 0.532, 11.209, 9.449, 4.007, 3.883)
+rotacion <- c(58.64, -243.02, 1, 1.03, 0.41, 0.43, -0.72, 0.67)
+anillos <- c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+
+planetas_df <- data.frame(nombre, tipo, diametro, rotacion, anillos)
+
+str(planetas_df)
+planetas_df[1,3]
+planetas_df[4,]
+
+planetas_df[1:5,3]
+planetas_df[,"diametro"]
+
+planetas_df[anillos, ]
+
+#subset(my_df, subset = some_condition)
+subset(planetas_df, diametro < 1)
+
+
+positions <-  order(planetas_df$diametro)
+
+planetas_df[positions,]
+```
+
+# Listas
+
+
+```{r}
+# Recordando:
+# Vectores (matriz unidimensional):  puede contener valores numéricos, de caracteres o lógicos. Los elementos en un vector tienen todos el mismo tipo de datos.
+# Matrices (matriz bidimensional): puede contener valores numéricos, de caracteres o lógicos. Los elementos en una matriz tienen todos el mismo tipo de datos.
+# Data Frame (objetos bidimensionales): pueden contener valores numéricos, de caracteres o lógicos. Dentro de una columna, todos los elementos tienen el mismo tipo de datos, pero diferentes columnas pueden ser de tipos de datos diferentes.
+
+# Una lista en R le permite reunir una variedad de objetos bajo un nombre (es decir, el nombre de la lista) de una manera ordenada. Estos objetos pueden ser matrices, vectores, data frames, incluso otras listas, etc. Ni siquiera es necesario que estos objetos estén relacionados entre sí de ninguna manera.
+
+# Una lista puede ser un tipo de supertipo de dato que puede almacenar prácticamente cualquier información.
+
+my_vector <- 1:6  # Vector
+my_matrix <- matrix(1:4, ncol = 2) # Matriz
+my_df <- mtcars[1:5, ] # Data Frame
+
+my_list <- list(my_vector,my_matrix, my_df) #Lista
+my_list
+
+```
