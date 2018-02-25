@@ -1,39 +1,137 @@
 ---
-title: "Congreso HidroAmbiental II"
+title: "Congreso HidroAmbiental I"
 author: "Roy Yali Samaniego"
-date: "21 de febrero de 2018"
+date: "24 de febrero de 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+DPLYR
+==============================================================================
+Dplyr es un paquete que permite la manipulación de datos, proporciona un conjunto de funciones que ayudan a resolver los desafíos más comunes de manipulación de datos:
+
+* mutate() : agrega nuevas variables que son funciones de variables existentes.
+* select() : selecciona variables basadas en sus nombres.
+* filter() : elige casos en función de sus valores.
+* summarise() : reduce múltiples valores hasta un solo resumen.
+* arrange() : cambia el orden de las columnas.
+
+
+```{r warning = FALSE, message = FALSE}
+library(gapminder)
+library(dplyr)
+gapminder
 ```
 
-## GGPLOT2
+### FILTER
+```{r warning = FALSE, message = FALSE}
+gapminder %>% 
+  filter(year == 2007)
+gapminder %>% 
+  filter(country == "United States")
+gapminder %>% 
+  filter(year == 2007, country == "United States")
+```
 
-- Hadley Wickman
-- Tiene capas para elementos gramaticales
-- Mapeos estéticos
+### ARRANGE
+```{r warning = FALSE, message = FALSE}
+gapminder %>% 
+  arrange(gdpPercap)
 
-```{r ggplot}
-# Dataset iris
+gapminder %>% 
+  arrange(desc(gdpPercap))
+
+gapminder %>% 
+  filter(year == 2007) %>% 
+  arrange(desc(gdpPercap))
+```
+
+### MUTATE
+```{r warning = FALSE, message = FALSE}
+gapminder %>% 
+  mutate(pop = pop/1000000)
+
+gapminder %>% 
+  mutate(gdp = gdpPercap * pop)
+
+gapminder %>% 
+  mutate(gdp = gdpPercap * pop) %>% filter(year == 2007) %>% arrange(desc(gdp)) 
+```
+
+
+
+
+GGPLOT2
+==============================================================================
+
+```{r warning = FALSE, message = FALSE}
+library(gapminder)
+library(dplyr)
 library(ggplot2)
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
-  geom_jitter(alpha = 0.6) +
-  facet_grid(. ~ Species) +
-  stat_smooth(method = "lm", se = F, col = "red")
 
-levels(iris$Species) <- c("Setosa", "Versicolor", "Virginica")
+gapminder_2007	<-	gapminder	%>%
+		filter(year	==	2007)
 
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
-  geom_jitter(alpha = 0.6) +
-  facet_grid(. ~ Species) +
-  stat_smooth(method = "lm", se = F, col = "red") +
-  scale_y_continuous("Sepal Width (cm)",
-                     limits = c(2, 5),
-                     expand = c(0, 0)) +
-  scale_x_continuous("Sepal Length (cm)",
-                     limits = c(4, 8),
-                     expand = c(0, 0)) +
-  coord_equal()
+# Scatter Plot
+ggplot(gapminder_2007,	aes(x	=	gdpPercap,	y	=	lifeExp))	+
+		geom_point()
+
+
+# Escala logarítimica
+ggplot(gapminder_2007,	aes(x	=	gdpPercap,	y	=	lifeExp))	+
+		geom_point()	+
+		scale_x_log10()
+
+```
+
+
+### Estética (aes)
+```{r warning = FALSE, message = FALSE}
+# Color
+ggplot(gapminder_2007,	aes(x	=	gdpPercap,	y	=	lifeExp,	color	=	continent))	+
+		geom_point()	+
+		scale_x_log10()
+
+# Tamaño
+ggplot(gapminder_2007,	aes(x	=	gdpPercap,	y	=	lifeExp,	color	=	continent, size	=	pop))	+
+		geom_point()	+
+		scale_x_log10()
+
+# Agrupado
+ggplot(gapminder_2007,	aes(x	=	gdpPercap,	y	=	lifeExp))	+
+		geom_point()	+
+		scale_x_log10()	+
+		facet_wrap(~continent)
+```
+
+
+### Lineas e histogramas
+```{r warning = FALSE, message = FALSE}
+
+by_year_continent	<-	gapminder	%>%
+		group_by(year,	continent)	%>%
+		summarize(totalPop	=	sum(pop), meanLifeExp	=	mean(lifeExp))
+by_year_continent
+
+# Grafico de lineas
+ggplot(by_year_continent,	aes(x	=	year,	y	=	meanLifeExp,	color	=	continent))	+
+		geom_line()	+
+		expand_limits(y	=	0)
+
+by_continent	<-	gapminder	%>%
+		filter(year	==	2007)	%>%
+		group_by(continent)	%>%
+		summarize(meanLifeExp	=	mean(lifeExp))
+by_continent
+
+# Grafico de barras
+ggplot(by_continent,	aes(x	=	continent,	y	=	meanLifeExp))	+
+		geom_col()
+
+# Histograma
+ggplot(gapminder_2007,	aes(x	=	lifeExp))	+
+		geom_histogram(binwidth	=	5)
+
+# Boxplot
+ggplot(gapminder_2007,	aes(x	=	continent,	y	=	lifeExp))	+
+		geom_boxplot()
 ```
